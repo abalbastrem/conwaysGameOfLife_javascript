@@ -48,7 +48,7 @@
 		.cell
 		{
 			height: 20px;
-			width: 20px; /* height and width must match BOARDHEIGHT AND BOARDWIDTH */
+			width: 20px; /* height and width must match CELLSIDE */
 			border-style: solid;
 			border-width: 1px;
 			border-collapse: collapse;
@@ -73,7 +73,6 @@
 		var MARGIN = 1; // It's always going to be '1'
 		var aStr = "";
 		var bStr = "";
-		var array = [];
 
 		/// CANVAS ///
 		for (var i = -MARGIN; i < BOARDHEIGHT+MARGIN; i++) {
