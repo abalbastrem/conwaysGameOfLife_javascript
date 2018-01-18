@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<html>
+<head>
+	<title>Game of life</title>
+	<style>
+		#rules
+		{
+			font-size: 20px;
+			position: absolute;
+			left:85px;
+			top:50px;
+		}
+		#canvas1
+		{
+			position: absolute;
+			left:100px;
+			top: 280px;
+			-moz-box-sizing: border-box;
+    		-webkit-box-sizing: border-box;
+		    box-sizing: border-box;
+		}
+		#canvas2
+		{
+			display: none;
+			position: absolute;
+			left:500px;
+			top: 350px;
+			-moz-box-sizing: border-box;
+    		-webkit-box-sizing: border-box;
+		    box-sizing: border-box;
+		}
+		#board1
+		{
+			position: absolute;
+		}
+		#board2
+		{
+			position: absolute;
+		}
+		#divbutton
+		{
+			display: none;
+			position: absolute;
+			top: 330px;
+			left: 60px;
+		}
+		.cell
+		{
+			height: 20px;
+			width: 20px; /* height and width must match BOARDHEIGHT AND BOARDWIDTH */
+			border-style: solid;
+			border-width: 1px;
+			border-collapse: collapse;
+			-moz-box-sizing: border-box;
+    		-webkit-box-sizing: border-box;
+		    box-sizing: border-box;
+		    font-size: 1px;
+		    
+		}
+		.row
+		{
+			position: absolute;
+		}
+	</style>
+
+	<script type="text/javascript">
+
+		/// GLOBAL VARIABLES ///
+		var BOARDHEIGHT = 30;
+		var BOARDWIDTH = 30;
+		var CELLSIDE = 20;
+		var MARGIN = 1; // It's always going to be '1'
+		var aStr = "";
+		var bStr = "";
+		var array = [];
+
+		/// CANVAS ///
+		for (var i = -MARGIN; i < BOARDHEIGHT+MARGIN; i++) {
+			aStr += '<div id="classA:'+i+'" class="row" style="left:'+i*CELLSIDE+'px;">';
+			bStr += '<div id="classB:'+i+'" class="row" style="left:'+i*CELLSIDE+'px;">';
+			for (var j = -MARGIN; j < BOARDWIDTH+MARGIN; j++) {
+				if ( i == BOARDHEIGHT || i == -MARGIN || j == BOARDWIDTH || j == -MARGIN ) {
+					aStr += '<div id="classA:'+i+';'+j+'" class="cell" style="background: yellow; display: none" >'+'M'+'</div>';
+					bStr += '<div id="classB:'+i+';'+j+'" class="cell" style="background: yellow; display: none" >'+'M'+'</div>';
+				} else {
+					aStr += '<div id="classA:'+i+';'+j+'" class="cell" style="background: white" onclick="manual('+i+','+j+')">'+'0'+'</div>';
+					bStr += '<div id="classB:'+i+';'+j+'" class="cell" style="background: white">'+0+'</div>';
+				}
+			}
+			aStr += '</div>';
+			bStr += '</div>';
+		}
+
+		/// FUNCTIONS ///
+		function manual(i,j) {
+			cellA = document.getElementById('classA:'+i+';'+j);
+			if ( cellA.innerHTML == "0" ) {
+				cellA.innerHTML = "1";
+				cellA.style = "background: gray";
+			} else if ( cellA.innerHTML == "1" ) {
+				cellA.innerHTML = "0";
+				cellA.style = "background: white";
+			}
+		}
+
+		function next() {			
+			for (var j = 0; j < BOARDHEIGHT; j++) {
+				for (var i = 0; i < BOARDWIDTH; i++) {
+					if ( lives(i,j) ) {
+						document.getElementById("classB:"+i+";"+j).innerHTML = 1;
+						document.getElementById("classB:"+i+";"+j).style = "background: gray";
+					} else {
+						document.getElementById("classB:"+i+";"+j).innerHTML = 0;
+						document.getElementById("classB:"+i+";"+j).style = "background: white";
+					}
+				}
+			}
+			str1 = document.getElementById("board2").innerHTML.replace(/B/g, "A");
+			document.getElementById("board1").innerHTML = str1;
+		}
+
+		function lives(i,j) {
+			var currentlyAlive;
+			var counter = 0;
+
+			// Checks is cell is currently alive
+			if ( document.getElementById("classA:"+i+";"+j).innerHTML == 1 ) {
+				currentlyAlive = true;
+			} else {
+				currentlyAlive = false;
+			}
+
+			console.log(i+';'+j+' lives? '+currentlyAlive);
+
+			// Checks the surrounding cells
+			if ( document.getElementById("classA:"+eval(i+1)+";"+j).innerHTML == 1 ) {
+				counter++;
+			}
+			if ( document.getElementById("classA:"+i+";"+eval(j+1)).innerHTML == 1 ) {
+				counter++;
+			}
+			if ( document.getElementById("classA:"+eval(i+1)+";"+eval(j+1)).innerHTML == 1 ) {
+				counter++;
+			}
+			if ( document.getElementById("classA:"+eval(i-1)+";"+j).innerHTML == 1 ) {
+				counter++;
+			}
+			if ( document.getElementById("classA:"+i+";"+eval(j-1)).innerHTML == 1 ) {
+				counter++;
+			}
+			if ( document.getElementById("classA:"+eval(i-1)+";"+eval(j-1)).innerHTML == 1 ) {
+				counter++;
+			}
+			if ( document.getElementById("classA:"+eval(i+1)+";"+eval(j-1)).innerHTML == 1 ) {
+				counter++;
+			}
+			if ( document.getElementById("classA:"+eval(i-1)+";"+eval(j+1)).innerHTML == 1 ) {
+				counter++;
+			}
+
+			if ( currentlyAlive ) {
+				if ( counter < 2 ) {
+					console.log("will die");
+					return false;
+				} else if ( counter == 2 || counter == 3 ) {
+					console.log("will live");
+					return true;
+				} else if ( counter > 3 ) {
+					console.log("will die");
+					return false;
+				}
+			} else { // if cell is dead
+				if ( counter == 3 ) {
+					console.log("will be born");
+					return true;
+				}
+			}
+		}
+		
+		function start() {
+			var iter = 0;
+			var iterations = document.getElementById("nGenerations").value;
+			interval = setInterval(function() {
+				if (iter < iterations) {
+					next();
+					iter++;
+				} else {
+					clearInterval(interval);
+				}
+			}, 200);
+		}
+
+
+	</script>
+
+
+</head>
+<body>
+
+	<div id="rules">
+		<h5>1. Any live cell with fewer than two live neighbours dies, as if caused by underpopulation.</h5>
+		<h5>2. Any live cell with two or three live neighbours lives on to the next generation.</h5>
+		<h5>3. Any live cell with more than three live neighbours dies, as if by overpopulation.</h5>
+		<h5>4. Any dead cell with exactly three live neighbours becomes a live cell, as if by reproduction.</h5>
+	</div>
+
+	<div id="canvas1">
+		<div id="title1">
+			<h3>
+				<a href="https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life" target="_blank">
+				CONWAY'S GAME OF LIFE</a>&emsp;
+				<input text="text" placeholder="how many generations?" id="nGenerations"></input>
+				<button onclick="start()">Start</button>
+			</h3>
+		</div>
+		
+		<div id="board1" class="board"></div>
+	</div>
+
+	<div id="canvas2">
+		<div id="title2"><h3>GENERATION N+1</h3></div>
+		<div id="board2" class="board"></div>
+	</div>
+
+	<div id="divbutton">
+		<button onclick="next()">Next generation</button>
+	</div>
+
+
+	<script type="text/javascript">
+
+		document.getElementById("board1").innerHTML = aStr;
+
+		document.getElementById("board2").innerHTML = bStr;
+
+	</script>
+
+</body>
+</html>
