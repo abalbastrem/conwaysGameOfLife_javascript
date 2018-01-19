@@ -1,9 +1,9 @@
 # Conway's GameOfLife
-## Done in javascript, css and html
+** Done in javascript, css and html **
 
 Conway's game of life is a *zero-player game*, that means, a game that plays itself based on an initial setup.
 
-Click on any squares you wish to switch them black (*'alive'*) or white (*'dead'*). There's no winners nor losers, and although a simple game, the sky is the limit. Once you are happy with the initial setup, specify the amount of generations you wish to see executed, press the *Start* button, sit back and enjoy the mathematical beauty of Life.
+Click on any cells to switch them black (*'live'*) or white (*'dead'*). Once you are happy with the initial setup, specify the amount of generations you wish to see executed, press the *Start* button, sit back and enjoy the mathematical beauty of Life.
 
 <br>
 
@@ -18,6 +18,7 @@ Click on any squares you wish to switch them black (*'alive'*) or white (*'dead'
 4. Any dead cell with exactly three live neighbours becomes a live cell, as if by reproduction.
 
 <br>
-<br>
+
+There's no winners nor losers, and although a simple game, the sky is the limit.
 
 [More info](https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life)
