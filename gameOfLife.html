@@ -67,6 +67,7 @@
 	<script type="text/javascript">
 
 		/// GLOBAL VARIABLES ///
+		// Modify BOARDHEIGHT and BOARDWITH to change the size of the board
 		var BOARDHEIGHT = 30;
 		var BOARDWIDTH = 30;
 		var CELLSIDE = 20;
@@ -123,7 +124,7 @@
 			var currentlyAlive;
 			var counter = 0;
 
-			// Checks is cell is currently alive
+			// Checks whether cell is currently alive
 			if ( document.getElementById("classA:"+i+";"+j).innerHTML == 1 ) {
 				currentlyAlive = true;
 			} else {
