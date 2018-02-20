@@ -64,14 +64,20 @@
 		}
 	</style>
 
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"> </script>
 	<script type="text/javascript">
+
+		// aStr = "";
+		// bStr = "";
 
 		/// LOAD PREVIOUS SESSION ///
 		$('document').ready(function() {
-			if ( localStorage.aStr !== null && localStorage.aStr !== null ) {
+			alert("ready");
+			if ( localStorage.aStr !== undefined && localStorage.aStr !== undefined ) {
+				alert("localStorage detected");
 				aStr = localStorage.aStr;
 				bStr = localStorage.bStr;
+
 			}
 		});
 
@@ -81,14 +87,14 @@
 		var BOARDWIDTH = 30;
 		var CELLSIDE = 20;
 		var MARGIN = 1; // It's always going to be '1'
-		if ( aStr !== null && bStr !== null ) {
+		if ( aStr !== undefined && bStr !== undefined ) {
 			aStr = "";
 			bStr = "";
 		}
 
 		/// CANVAS ///
 		// Creates the strings that will form the canvas when loading the page for the first time
-		if ( aStr == 'null' && bStr == 'null') {
+		if ( aStr == "" && bStr == "") {
 
 			for (var i = -MARGIN; i < BOARDHEIGHT+MARGIN; i++) {
 				aStr += '<div id="classA:'+i+'" class="row" style="left:'+i*CELLSIDE+'px;">';
