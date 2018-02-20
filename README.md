@@ -1,9 +1,9 @@
 # Conway's GameOfLife
 ** Done in javascript, css and html **
 
-Conway's game of life is a *zero-player game*, that means, a game that plays itself based on an initial setup.
+Conway's game of life is a *zero-player game*, that is, a game that plays itself based on an initial setup.
 
-Click on any cells to switch them black (*'live'*) or white (*'dead'*). Once you are happy with the initial setup, specify the amount of generations you wish to see executed, press the *Start* button, sit back and enjoy the mathematical beauty of Life.
+Click on any cells to switch them to black (*'live'*) or white (*'dead'*). Once you are happy with the initial setup, specify the amount of generations you wish to see executed, press the *Start* button, sit back and enjoy the mathematical beauty of Life.
 
 <br>
 

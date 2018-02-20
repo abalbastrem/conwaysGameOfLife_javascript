@@ -9,7 +9,7 @@
 			font-size: 20px;
 			position: absolute;
 			left:85px;
-			top:50px;
+			top: 50px;
 		}
 		#canvas1
 		{
@@ -56,7 +56,7 @@
     		-webkit-box-sizing: border-box;
 		    box-sizing: border-box;
 		    font-size: 1px;
-		    
+
 		}
 		.row
 		{
@@ -64,7 +64,16 @@
 		}
 	</style>
 
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js">
 	<script type="text/javascript">
+
+		/// LOAD PREVIOUS SESSION ///
+		$('document').ready(function() {
+			if ( localStorage.aStr !== null && localStorage.aStr !== null ) {
+				aStr = localStorage.aStr;
+				bStr = localStorage.bStr;
+			}
+		});
 
 		/// GLOBAL VARIABLES ///
 		// Modify BOARDHEIGHT and BOARDWITH to change the size of the board
@@ -72,24 +81,31 @@
 		var BOARDWIDTH = 30;
 		var CELLSIDE = 20;
 		var MARGIN = 1; // It's always going to be '1'
-		var aStr = "";
-		var bStr = "";
+		if ( aStr !== null && bStr !== null ) {
+			aStr = "";
+			bStr = "";
+		}
 
 		/// CANVAS ///
-		for (var i = -MARGIN; i < BOARDHEIGHT+MARGIN; i++) {
-			aStr += '<div id="classA:'+i+'" class="row" style="left:'+i*CELLSIDE+'px;">';
-			bStr += '<div id="classB:'+i+'" class="row" style="left:'+i*CELLSIDE+'px;">';
-			for (var j = -MARGIN; j < BOARDWIDTH+MARGIN; j++) {
-				if ( i == BOARDHEIGHT || i == -MARGIN || j == BOARDWIDTH || j == -MARGIN ) {
-					aStr += '<div id="classA:'+i+';'+j+'" class="cell" style="background: yellow; display: none" >'+'M'+'</div>';
-					bStr += '<div id="classB:'+i+';'+j+'" class="cell" style="background: yellow; display: none" >'+'M'+'</div>';
-				} else {
-					aStr += '<div id="classA:'+i+';'+j+'" class="cell" style="background: white" onclick="manual('+i+','+j+')">'+'0'+'</div>';
-					bStr += '<div id="classB:'+i+';'+j+'" class="cell" style="background: white">'+0+'</div>';
+		// Creates the strings that will form the canvas when loading the page for the first time
+		if ( aStr == 'null' && bStr == 'null') {
+
+			for (var i = -MARGIN; i < BOARDHEIGHT+MARGIN; i++) {
+				aStr += '<div id="classA:'+i+'" class="row" style="left:'+i*CELLSIDE+'px;">';
+				bStr += '<div id="classB:'+i+'" class="row" style="left:'+i*CELLSIDE+'px;">';
+				for (var j = -MARGIN; j < BOARDWIDTH+MARGIN; j++) {
+					if ( i == BOARDHEIGHT || i == -MARGIN || j == BOARDWIDTH || j == -MARGIN ) {
+						aStr += '<div id="classA:'+i+';'+j+'" class="cell" style="background: yellow; display: none" >'+'M'+'</div>';
+						bStr += '<div id="classB:'+i+';'+j+'" class="cell" style="background: yellow; display: none" >'+'M'+'</div>';
+					} else {
+						aStr += '<div id="classA:'+i+';'+j+'" class="cell" style="background: white" onclick="manual('+i+','+j+')">'+'0'+'</div>';
+						bStr += '<div id="classB:'+i+';'+j+'" class="cell" style="background: white">'+0+'</div>';
+					}
 				}
+				aStr += '</div>';
+				bStr += '</div>';
 			}
-			aStr += '</div>';
-			bStr += '</div>';
+
 		}
 
 		/// FUNCTIONS ///
@@ -104,7 +120,7 @@
 			}
 		}
 
-		function next() {			
+		function next() {
 			for (var j = 0; j < BOARDHEIGHT; j++) {
 				for (var i = 0; i < BOARDWIDTH; i++) {
 					if ( lives(i,j) ) {
@@ -177,7 +193,7 @@
 				}
 			}
 		}
-		
+
 		function start() {
 			var iter = 0;
 			var iterations = document.getElementById("nGenerations").value;
@@ -190,6 +206,10 @@
 				}
 			}, 200); // change this number (in ms) to speed up or slow down the game
 		}
+
+		/// SET COOKIES ///
+		localStorage.setItem("aStr", aStr);
+		localStorage.setItem("bStr", bStr);
 
 
 	</script>
@@ -214,7 +234,7 @@
 				<button onclick="start()">Start</button>
 			</h3>
 		</div>
-		
+
 		<div id="board1" class="board"></div>
 	</div>
 
