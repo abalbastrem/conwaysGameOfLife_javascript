@@ -1,126 +1,118 @@
 <!DOCTYPE html>
 <meta charset="utf-8">
 <html>
+
 <head>
 	<title>Game of life</title>
 	<style>
-		#rules
-		{
+		#rules {
 			font-size: 20px;
 			position: absolute;
-			left:85px;
+			left: 85px;
 			top: 50px;
 		}
-		#canvas1
-		{
+
+		#canvas1 {
 			position: absolute;
-			left:100px;
+			left: 100px;
 			top: 280px;
 			-moz-box-sizing: border-box;
-    		-webkit-box-sizing: border-box;
-		    box-sizing: border-box;
+			-webkit-box-sizing: border-box;
+			box-sizing: border-box;
 		}
-		#canvas2
-		{
+
+		#canvas2 {
 			display: none;
 			position: absolute;
-			left:500px;
+			left: 500px;
 			top: 350px;
 			-moz-box-sizing: border-box;
-    		-webkit-box-sizing: border-box;
-		    box-sizing: border-box;
+			-webkit-box-sizing: border-box;
+			box-sizing: border-box;
 		}
-		#board1
-		{
+
+		#board1 {
 			position: absolute;
 		}
-		#board2
-		{
+
+		#board2 {
 			position: absolute;
 		}
-		#divbutton
-		{
+
+		#divbutton {
 			display: none;
 			position: absolute;
 			top: 330px;
 			left: 60px;
 		}
-		.cell
-		{
+
+		.cell {
 			height: 20px;
-			width: 20px; /* height and width must match CELLSIDE */
+			width: 20px;
+			/* height and width must match CELLSIDE */
 			border-style: solid;
 			border-width: 1px;
 			border-collapse: collapse;
 			-moz-box-sizing: border-box;
-    		-webkit-box-sizing: border-box;
-		    box-sizing: border-box;
-		    font-size: 1px;
+			-webkit-box-sizing: border-box;
+			box-sizing: border-box;
+			font-size: 1px;
 
 		}
-		.row
-		{
+
+		.row {
 			position: absolute;
 		}
 	</style>
 
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"> </script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js">
+	</script>
 	<script type="text/javascript">
-
-		// aStr = "";
-		// bStr = "";
-
-		/// LOAD PREVIOUS SESSION ///
-		$('document').ready(function() {
-			alert("ready");
-			if ( localStorage.aStr !== undefined && localStorage.aStr !== undefined ) {
-				alert("localStorage detected");
-				aStr = localStorage.aStr;
-				bStr = localStorage.bStr;
-
-			}
-		});
-
 		/// GLOBAL VARIABLES ///
 		// Modify BOARDHEIGHT and BOARDWITH to change the size of the board
 		var BOARDHEIGHT = 30;
 		var BOARDWIDTH = 30;
 		var CELLSIDE = 20;
 		var MARGIN = 1; // It's always going to be '1'
-		if ( aStr !== undefined && bStr !== undefined ) {
-			aStr = "";
-			bStr = "";
-		}
+		var SPEED = 200; // change this number (in ms) to speed up or slow down the game
+		aStr = "";
+		bStr = "";
 
-		/// CANVAS ///
-		// Creates the strings that will form the canvas when loading the page for the first time
-		if ( aStr == "" && bStr == "") {
+		/// SESSION ///
+		// If previous session is found, retrieves the main strings
+		if (localStorage.getItem("aStr") !== null && localStorage.getItem("bStr") !== null) {
+			alert("localStorage detected");
+			aStr = localStorage.getItem("aStr");
+			bStr = localStorage.getItem("bStr");
+		} else {
 
-			for (var i = -MARGIN; i < BOARDHEIGHT+MARGIN; i++) {
-				aStr += '<div id="classA:'+i+'" class="row" style="left:'+i*CELLSIDE+'px;">';
-				bStr += '<div id="classB:'+i+'" class="row" style="left:'+i*CELLSIDE+'px;">';
-				for (var j = -MARGIN; j < BOARDWIDTH+MARGIN; j++) {
-					if ( i == BOARDHEIGHT || i == -MARGIN || j == BOARDWIDTH || j == -MARGIN ) {
-						aStr += '<div id="classA:'+i+';'+j+'" class="cell" style="background: yellow; display: none" >'+'M'+'</div>';
-						bStr += '<div id="classB:'+i+';'+j+'" class="cell" style="background: yellow; display: none" >'+'M'+'</div>';
+			/// CANVAS ///
+			// Creates the strings that will form the canvas when loading the page for the first time
+			for (var i = -MARGIN; i < BOARDHEIGHT + MARGIN; i++) {
+				aStr += '<div id="classA:' + i + '" class="row" style="left:' + i * CELLSIDE + 'px;">';
+				bStr += '<div id="classB:' + i + '" class="row" style="left:' + i * CELLSIDE + 'px;">';
+				for (var j = -MARGIN; j < BOARDWIDTH + MARGIN; j++) {
+					if (i == BOARDHEIGHT || i == -MARGIN || j == BOARDWIDTH || j == -MARGIN) {
+						aStr += '<div id="classA:' + i + ';' + j + '" class="cell" style="background: yellow; display: none" >' + 'M' + '</div>';
+						bStr += '<div id="classB:' + i + ';' + j + '" class="cell" style="background: yellow; display: none" >' + 'M' + '</div>';
 					} else {
-						aStr += '<div id="classA:'+i+';'+j+'" class="cell" style="background: white" onclick="manual('+i+','+j+')">'+'0'+'</div>';
-						bStr += '<div id="classB:'+i+';'+j+'" class="cell" style="background: white">'+0+'</div>';
+						aStr += '<div id="classA:' + i + ';' + j + '" class="cell" style="background: white" onclick="manual(' + i + ',' + j + ')">' + '0' + '</div>';
+						bStr += '<div id="classB:' + i + ';' + j + '" class="cell" style="background: white">' + 0 + '</div>';
 					}
 				}
 				aStr += '</div>';
 				bStr += '</div>';
 			}
 
-		}
+		};
 
 		/// FUNCTIONS ///
-		function manual(i,j) {
-			cellA = document.getElementById('classA:'+i+';'+j);
-			if ( cellA.innerHTML == "0" ) {
+		function manual(i, j) {
+			cellA = document.getElementById('classA:' + i + ';' + j);
+			if (cellA.innerHTML == "0") {
 				cellA.innerHTML = "1";
 				cellA.style = "background: gray";
-			} else if ( cellA.innerHTML == "1" ) {
+			} else if (cellA.innerHTML == "1") {
 				cellA.innerHTML = "0";
 				cellA.style = "background: white";
 			}
@@ -129,12 +121,12 @@
 		function next() {
 			for (var j = 0; j < BOARDHEIGHT; j++) {
 				for (var i = 0; i < BOARDWIDTH; i++) {
-					if ( lives(i,j) ) {
-						document.getElementById("classB:"+i+";"+j).innerHTML = 1;
-						document.getElementById("classB:"+i+";"+j).style = "background: gray";
+					if (lives(i, j)) {
+						document.getElementById("classB:" + i + ";" + j).innerHTML = 1;
+						document.getElementById("classB:" + i + ";" + j).style = "background: gray";
 					} else {
-						document.getElementById("classB:"+i+";"+j).innerHTML = 0;
-						document.getElementById("classB:"+i+";"+j).style = "background: white";
+						document.getElementById("classB:" + i + ";" + j).innerHTML = 0;
+						document.getElementById("classB:" + i + ";" + j).style = "background: white";
 					}
 				}
 			}
@@ -142,58 +134,58 @@
 			document.getElementById("board1").innerHTML = str1;
 		}
 
-		function lives(i,j) {
+		function lives(i, j) {
 			var currentlyAlive;
 			var counter = 0;
 
 			// Checks whether cell is currently alive
-			if ( document.getElementById("classA:"+i+";"+j).innerHTML == 1 ) {
+			if (document.getElementById("classA:" + i + ";" + j).innerHTML == 1) {
 				currentlyAlive = true;
 			} else {
 				currentlyAlive = false;
 			}
 
-			console.log(i+';'+j+' lives? '+currentlyAlive);
+			console.log(i + ';' + j + ' lives? ' + currentlyAlive);
 
 			// Checks the surrounding cells
-			if ( document.getElementById("classA:"+eval(i+1)+";"+j).innerHTML == 1 ) {
+			if (document.getElementById("classA:" + eval(i + 1) + ";" + j).innerHTML == 1) {
 				counter++;
 			}
-			if ( document.getElementById("classA:"+i+";"+eval(j+1)).innerHTML == 1 ) {
+			if (document.getElementById("classA:" + i + ";" + eval(j + 1)).innerHTML == 1) {
 				counter++;
 			}
-			if ( document.getElementById("classA:"+eval(i+1)+";"+eval(j+1)).innerHTML == 1 ) {
+			if (document.getElementById("classA:" + eval(i + 1) + ";" + eval(j + 1)).innerHTML == 1) {
 				counter++;
 			}
-			if ( document.getElementById("classA:"+eval(i-1)+";"+j).innerHTML == 1 ) {
+			if (document.getElementById("classA:" + eval(i - 1) + ";" + j).innerHTML == 1) {
 				counter++;
 			}
-			if ( document.getElementById("classA:"+i+";"+eval(j-1)).innerHTML == 1 ) {
+			if (document.getElementById("classA:" + i + ";" + eval(j - 1)).innerHTML == 1) {
 				counter++;
 			}
-			if ( document.getElementById("classA:"+eval(i-1)+";"+eval(j-1)).innerHTML == 1 ) {
+			if (document.getElementById("classA:" + eval(i - 1) + ";" + eval(j - 1)).innerHTML == 1) {
 				counter++;
 			}
-			if ( document.getElementById("classA:"+eval(i+1)+";"+eval(j-1)).innerHTML == 1 ) {
+			if (document.getElementById("classA:" + eval(i + 1) + ";" + eval(j - 1)).innerHTML == 1) {
 				counter++;
 			}
-			if ( document.getElementById("classA:"+eval(i-1)+";"+eval(j+1)).innerHTML == 1 ) {
+			if (document.getElementById("classA:" + eval(i - 1) + ";" + eval(j + 1)).innerHTML == 1) {
 				counter++;
 			}
 
-			if ( currentlyAlive ) {
-				if ( counter < 2 ) {
+			if (currentlyAlive) {
+				if (counter < 2) {
 					console.log("will die");
 					return false;
-				} else if ( counter == 2 || counter == 3 ) {
+				} else if (counter == 2 || counter == 3) {
 					console.log("will live");
 					return true;
-				} else if ( counter > 3 ) {
+				} else if (counter > 3) {
 					console.log("will die");
 					return false;
 				}
 			} else { // if cell is dead
-				if ( counter == 3 ) {
+				if (counter == 3) {
 					console.log("will be born");
 					return true;
 				}
@@ -207,21 +199,26 @@
 				if (iter < iterations) {
 					next();
 					iter++;
+					/// UPDATE COOKIES ///
+					localStorage.setItem("aStr", document.getElementById("board1").innerHTML);
+					localStorage.setItem("bStr", document.getElementById("board2").innerHTML);
 				} else {
 					clearInterval(interval);
 				}
-			}, 200); // change this number (in ms) to speed up or slow down the game
+			}, SPEED);
 		}
 
-		/// SET COOKIES ///
-		localStorage.setItem("aStr", aStr);
-		localStorage.setItem("bStr", bStr);
-
+		function reset() {
+			localStorage.removeItem("aStr");
+			localStorage.removeItem("bStr");
+			location.reload();
+		}
 
 	</script>
 
 
 </head>
+
 <body>
 
 	<div id="rules">
@@ -238,6 +235,7 @@
 				CONWAY'S GAME OF LIFE</a>&emsp;
 				<input text="text" placeholder="how many generations?" id="nGenerations"></input>
 				<button onclick="start()">Start</button>
+				<button id="resetButton" onclick="reset()">Reset</button>
 			</h3>
 		</div>
 
@@ -245,7 +243,8 @@
 	</div>
 
 	<div id="canvas2">
-		<div id="title2"><h3>GENERATION N+1</h3></div>
+		<div id="title2">
+			<h3>GENERATION N+1</h3></div>
 		<div id="board2" class="board"></div>
 	</div>
 
@@ -255,12 +254,13 @@
 
 
 	<script type="text/javascript">
-
 		document.getElementById("board1").innerHTML = aStr;
 
 		document.getElementById("board2").innerHTML = bStr;
 
+		$("#resetButton")
 	</script>
 
 </body>
+
 </html>
