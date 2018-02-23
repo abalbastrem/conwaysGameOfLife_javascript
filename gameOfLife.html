@@ -46,6 +46,10 @@
 			left: 60px;
 		}
 
+		#resetButton {
+			display: none;
+		}
+
 		.cell {
 			height: 20px;
 			width: 20px;
@@ -78,10 +82,9 @@
 		aStr = "";
 		bStr = "";
 
-		/// SESSION ///
+		/// COOKIES ///
 		// If previous session is found, retrieves the main strings
 		if (localStorage.getItem("aStr") !== null && localStorage.getItem("bStr") !== null) {
-			alert("localStorage detected");
 			aStr = localStorage.getItem("aStr");
 			bStr = localStorage.getItem("bStr");
 		} else {
@@ -202,6 +205,7 @@
 					/// UPDATE COOKIES ///
 					localStorage.setItem("aStr", document.getElementById("board1").innerHTML);
 					localStorage.setItem("bStr", document.getElementById("board2").innerHTML);
+					localStorage.setItem("sessionStarted","true");
 				} else {
 					clearInterval(interval);
 				}
@@ -209,10 +213,20 @@
 		}
 
 		function reset() {
+			$("#resetButton").hide();
 			localStorage.removeItem("aStr");
 			localStorage.removeItem("bStr");
+			localStorage.setItem("sessionStarted","false");
 			location.reload();
 		}
+
+		$(document).ready(function() {
+			if ( localStorage.getItem("sessionStarted") == "true" ) {
+				$("#resetButton").show();
+			} else {
+				$("#resetButton").hide();
+			}
+		})
 
 	</script>
 
@@ -234,7 +248,7 @@
 				<a href="https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life" target="_blank">
 				CONWAY'S GAME OF LIFE</a>&emsp;
 				<input text="text" placeholder="how many generations?" id="nGenerations"></input>
-				<button onclick="start()">Start</button>
+				<button onclick="start(), $('#resetButton').show()">Start</button>
 				<button id="resetButton" onclick="reset()">Reset</button>
 			</h3>
 		</div>
